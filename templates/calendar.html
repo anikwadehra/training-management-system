@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Calendar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/assets/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="header_3">
+    <div class="header_top">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-12 col-lg-12">
+                    <div class="info_wrapper">
+                        <div class="contact_info">                   
+                            <ul class="list-unstyled">
+                                <li>Welcome {{ current_user.id }}</li>
+                            </ul>                
+                        </div>
+                        <div class="login_info">
+                            <form action="{{ url_for('logout') }}" method="POST">
+                                <button type="submit" class="btn btn-default login_btn">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <h2>Training Calendar</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-secondary" onclick="changeMonth(-1)">Previous</button>
+        <h3 id="currentMonth">{{ current_month }}</h3>
+        <button class="btn btn-secondary" onclick="changeMonth(1)">Next</button>
+    </div>
+
+    <div class="row">
+        {% for week in calendar %}
+            <div class="col-12">
+                <div class="row">
+                    {% for day in week %}
+                        <div class="col border text-center" style="min-height: 100px;">
+                            <div class="day-number">{{ day.day }}</div>
+                            <div class="trainings">
+                                {% for training in trainings %}
+                                    {% if training.date == day.date %}
+                                        <div class="training-item">{{ training.title }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <form method="POST" class="mt-4">
+        <div class="form-group">
+            <label for="title">Training Title:</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" name="date" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="time">Time:</label>
+            <input type="time" name="time" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Training</button>
+    </form>
+
+    <h3>Scheduled Trainings</h3>
+    <ul>
+        {% for training in trainings %}
+            <li>{{ training.title }} - {{ training.date }} at {{ training.time }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script>
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+
+    function changeMonth(direction) {
+        currentMonth += direction;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        } else if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        loadCalendar();
+    }
+
+    function loadCalendar() {
+        // Implement AJAX or form submission to load the calendar for the new month
+        // This can be done by sending the currentMonth and currentYear to the server
+        // and re-rendering the calendar with the new data.
+    }
+</script>
+</body>
+</html> 
